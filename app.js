@@ -1,9 +1,12 @@
-let scores, roundScore, activePlayer;
+// definiálunk egy új változót az előző dobás pontjainak - previousScore 
+let scores, roundScore, activePlayer, previousScore;
 
 function init() {
   scores = [0, 0];
   roundScore = 0;
   activePlayer = 0;
+  // az új változó induló értéke
+  previousScore = 0;
 
   document.querySelector('#score-0').textContent = 0;
   document.querySelector('#score-1').textContent = 0;
@@ -34,13 +37,22 @@ document.querySelector('.btn-roll').addEventListener('click', function () {
   let diceDOM = document.querySelector('.dice');
   diceDOM.style.display = 'block';
   diceDOM.setAttribute('src', 'dice-' + dice + '.png');
-
-  if (dice !== 1) {
-    roundScore = roundScore + dice;
-    document.querySelector('#current-' + activePlayer).textContent = roundScore;
-  } else {
+  // Új vizsgálat, elágazás: ha a játékos előző dobása és a mostani  6, akkor elveszíti a játéko és a következő játékos jön
+  if (dice === 6 && previousScore === 6) {
+    scores[activePlayer] = 0;
+    document.querySelector('#current-' + activePlayer).textContent = 0;
     nextPlayer();
+  } else {
+    if (dice !== 1) {
+      roundScore = roundScore + dice;
+      document.querySelector('#current-' + activePlayer).textContent = roundScore;
+    } else {
+      nextPlayer();
+    }
   }
+
+  previousScore = dice;
+  // console.log(previousScore);
 });
 
 function nextPlayer() {
